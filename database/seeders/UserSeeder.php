@@ -14,9 +14,9 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $users = [
-            ['name' => 'Shop Owner', 'email' => 'owner@icecream.test', 'role' => 'owner'],
-            ['name' => 'Shop Manager', 'email' => 'manager@icecream.test', 'role' => 'manager'],
-            ['name' => 'Shop Cashier', 'email' => 'cashier@icecream.test', 'role' => 'cashier'],
+            ['name' => 'Shop Owner', 'email' => 'owner@icecream.com', 'role' => 'owner'],
+            ['name' => 'Shop Manager', 'email' => 'manager@icecream.com', 'role' => 'manager'],
+            ['name' => 'Shop Cashier', 'email' => 'cashier@icecream.com', 'role' => 'cashier'],
         ];
 
         foreach ($users as $userData) {

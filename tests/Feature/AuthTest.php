@@ -26,7 +26,7 @@ class AuthTest extends TestCase
 
     public function test_login_requires_email_and_password(): void
     {
-        $response = $this->postJson('/auth/login', []);
+        $response = $this->postJson('/api/auth/login', []);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email', 'password']);
@@ -41,7 +41,7 @@ class AuthTest extends TestCase
             'role' => 'owner',
         ]);
 
-        $response = $this->postJson('/auth/login', [
+        $response = $this->postJson('/api/auth/login', [
             'email' => 'test@icecream.test',
             'password' => 'wrong-password',
         ]);
@@ -61,7 +61,7 @@ class AuthTest extends TestCase
             'role' => 'owner',
         ]);
 
-        $response = $this->postJson('/auth/login', [
+        $response = $this->postJson('/api/auth/login', [
             'email' => 'test@icecream.test',
             'password' => 'secret123',
         ]);
@@ -78,7 +78,7 @@ class AuthTest extends TestCase
 
     public function test_unauthenticated_request_to_protected_route_is_rejected(): void
     {
-        $response = $this->getJson('/auth/user');
+        $response = $this->getJson('/api/auth/user');
 
         $response->assertStatus(401);
     }
@@ -92,7 +92,7 @@ class AuthTest extends TestCase
             'role' => 'owner',
         ]);
 
-        $loginResponse = $this->postJson('/auth/login', [
+        $loginResponse = $this->postJson('/api/auth/login', [
             'email' => 'test@icecream.test',
             'password' => 'secret123',
         ]);
@@ -100,7 +100,7 @@ class AuthTest extends TestCase
         $token = $loginResponse->json('token');
 
         $response = $this->withHeader('Authorization', 'Bearer '.$token)
-            ->getJson('/auth/user');
+            ->getJson('/api/auth/user');
 
         $response->assertStatus(200)
             ->assertJson([
@@ -120,7 +120,7 @@ class AuthTest extends TestCase
             'role' => 'owner',
         ]);
 
-        $loginResponse = $this->postJson('/auth/login', [
+        $loginResponse = $this->postJson('/api/auth/login', [
             'email' => 'test@icecream.test',
             'password' => 'secret123',
         ]);
@@ -128,7 +128,7 @@ class AuthTest extends TestCase
         $token = $loginResponse->json('token');
 
         $logoutResponse = $this->withHeader('Authorization', 'Bearer '.$token)
-            ->postJson('/auth/logout');
+            ->postJson('/api/auth/logout');
 
         $logoutResponse->assertStatus(200)
             ->assertJson(['message' => 'User logged out']);
@@ -138,7 +138,7 @@ class AuthTest extends TestCase
         auth()->forgetGuards();
 
         $subsequentResponse = $this->withHeader('Authorization', 'Bearer '.$token)
-            ->getJson('/auth/user');
+            ->getJson('/api/auth/user');
 
         $subsequentResponse->assertStatus(401);
     }

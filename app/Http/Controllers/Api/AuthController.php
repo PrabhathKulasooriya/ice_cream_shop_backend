@@ -10,9 +10,27 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    /**
-     * Authenticate user and issue an API access token.
-     */
+    //user signup
+    public function signup(Request $request): JsonResponse{
+        
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+            'role' => 'required|string|in:owner,manager,cashier',
+        ]);
+
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => $data['role'],
+        ]);
+
+        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+    }
+    
+    //user login
     public function login(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -34,9 +52,8 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Revoke the current access token.
-     */
+    // User Logout and revoke the API access token.
+     
     public function logout(Request $request): JsonResponse
     {
         $request->user()?->token()?->revoke();
@@ -44,9 +61,7 @@ class AuthController extends Controller
         return response()->json(['message' => 'User logged out']);
     }
 
-    /**
-     * Get the authenticated user's profile.
-     */
+    //Get the authenticated user's profile.
     public function user(Request $request): JsonResponse
     {
         return response()->json($request->user());
